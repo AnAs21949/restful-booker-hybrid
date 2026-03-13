@@ -1,0 +1,43 @@
+name: Test Suite
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+
+      - name: Run API tests
+        run: pytest tests/test_api/ -v
+
+      - name: Run UI tests
+        run: pytest tests/test_ui/ -v --headless
+
+      - name: Run Hybrid tests
+        run: pytest tests/test_hybrid/ -v --headless
+
+      - name: Generate HTML report
+        run: pytest tests/ --html=report.html --self-contained-html
+
+      - name: Upload report
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report
+          path: report.html

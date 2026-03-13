@@ -89,9 +89,4 @@ def test_create_multiple_bookings_all_searchable(api_client, booking_cleanup):
 })
     booking_cleanup.append(res3["bookingid"])
 
-    response = api_client.get_all_bookings(firstname="Multi123")
-    # booking_id = response[0]["bookingid"]
-    # api_client.delete_booking(booking_id)
-    # api_client.delete_booking(booking_id)
-    # api_client.delete_booking(booking_id)
     assert len(api_client.get_all_bookings(firstname="Multi123")) >= 3
