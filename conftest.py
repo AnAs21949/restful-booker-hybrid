@@ -4,6 +4,9 @@ from api.client import BookingAPIClient
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from pages.login_page import LoginPage
+from selenium.webdriver.chrome.options import Options
+import os
+
 
 
 
@@ -13,14 +16,15 @@ def api_client():
     client.authenticate("admin", "password123")
     yield client
 
-from selenium.webdriver.chrome.options import Options
+
 
 @pytest.fixture(scope='function')
 def driver():
     options = Options()
-    options.add_argument('--headless')
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-dev-shm-usage')
+    if os.getenv('CI'):
+        options.add_argument('--headless')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-dev-shm-usage')
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
     yield driver
     driver.quit()
