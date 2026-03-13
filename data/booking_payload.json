@@ -1,0 +1,11 @@
+{
+  "firstname": "Ali",
+  "lastname": "Hassan",
+  "totalprice": 200,
+  "depositpaid": true,
+  "bookingdates": {
+    "checkin": "2025-06-01",
+    "checkout": "2025-06-05"
+  },
+  "additionalneeds": "Breakfast"
+}

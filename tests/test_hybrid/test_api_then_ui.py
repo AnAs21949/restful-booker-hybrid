@@ -1,0 +1,97 @@
+import pytest
+from api.client import BookingAPIClient
+from utils.helpers import load_booking_payload as myData
+
+@pytest.mark.hybrid
+@pytest.mark.regression
+def test_create_booking_visible_via_search(api_client, booking_cleanup):
+    res = api_client.create_booking({
+  "firstname": "Anas123",
+  "lastname": "Hassan",
+  "totalprice": 200,
+  "depositpaid": True,
+  "bookingdates": {
+    "checkin": "2025-06-01",
+    "checkout": "2025-06-05"
+  },
+  "additionalneeds": "Breakfast"
+})
+    booking_cleanup.append(res["bookingid"])
+    response = api_client.get_all_bookings(firstname="Anas123")
+    assert len(response) > 0
+
+    booking_id = response[0]["bookingid"]
+    api_client.delete_booking(booking_id)
+    assert len(api_client.get_all_bookings(firstname="Anas123")) == 0
+
+
+
+@pytest.mark.regression
+@pytest.mark.hybrid
+def test_delete_via_api_booking_gone_from_search(api_client, booking_cleanup):
+    res = api_client.create_booking({
+  "firstname": "DeleteMe123",
+  "lastname": "Hassan",
+  "totalprice": 200,
+  "depositpaid": True,
+  "bookingdates": {
+    "checkin": "2025-06-01",
+    "checkout": "2025-06-05"
+  },
+  "additionalneeds": "Breakfast"
+})
+    booking_cleanup.append(res["bookingid"])
+    response = api_client.get_all_bookings(firstname="DeleteMe123")
+    booking_id = response[0]["bookingid"]
+    api_client.delete_booking(booking_id)
+    assert len(api_client.get_all_bookings(firstname="DeleteMe123")) == 0
+
+
+@pytest.mark.regression
+@pytest.mark.hybrid
+def test_create_multiple_bookings_all_searchable(api_client, booking_cleanup):
+    res1 = api_client.create_booking({
+  "firstname": "Multi123",
+  "lastname": "Hassan",
+  "totalprice": 200,
+  "depositpaid": True,
+  "bookingdates": {
+    "checkin": "2025-06-01",
+    "checkout": "2025-06-05"
+  },
+  "additionalneeds": "Breakfast"
+})
+    booking_cleanup.append(res1["bookingid"])
+
+    res2 = api_client.create_booking({
+  "firstname": "Multi123",
+  "lastname": "Hassan",
+  "totalprice": 200,
+  "depositpaid": True,
+  "bookingdates": {
+    "checkin": "2025-06-01",
+    "checkout": "2025-06-05"
+  },
+  "additionalneeds": "Breakfast"
+})
+    booking_cleanup.append(res2["bookingid"])
+
+    res3 = api_client.create_booking({
+  "firstname": "Multi123",
+  "lastname": "Hassan",
+  "totalprice": 200,
+  "depositpaid": True,
+  "bookingdates": {
+    "checkin": "2025-06-01",
+    "checkout": "2025-06-05"
+  },
+  "additionalneeds": "Breakfast"
+})
+    booking_cleanup.append(res3["bookingid"])
+
+    response = api_client.get_all_bookings(firstname="Multi123")
+    # booking_id = response[0]["bookingid"]
+    # api_client.delete_booking(booking_id)
+    # api_client.delete_booking(booking_id)
+    # api_client.delete_booking(booking_id)
+    assert len(api_client.get_all_bookings(firstname="Multi123")) >= 3
