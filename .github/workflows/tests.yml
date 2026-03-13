@@ -2,9 +2,9 @@ name: Test Suite
 
 on:
   push:
-    branches: [master]
+    branches: [main]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 jobs:
   test:
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: "3.13"
 
       - name: Install dependencies
         run: pip install -r requirements.txt
@@ -24,22 +24,14 @@ jobs:
       - name: Install Chrome
         uses: browser-actions/setup-chrome@v1
 
-      - name: Set up ChromeDriver
-        run: |
-          python -c "from webdriver_manager.chrome import ChromeDriverManager; ChromeDriverManager().install()"
-
       - name: Run API tests
         run: pytest tests/test_api/ -v
 
       - name: Run UI tests
-        run: pytest tests/test_ui/ -v
-        env:
-          CI: true
+        run: pytest tests/test_ui/ -v --headless
 
       - name: Run Hybrid tests
-        run: pytest tests/test_hybrid/ -v
-        env:
-          CI: true
+        run: pytest tests/test_hybrid/ -v --headless
 
       - name: Generate HTML report
         run: pytest tests/ --html=report.html --self-contained-html
