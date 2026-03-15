@@ -38,3 +38,50 @@ def test_delete_without_token_returns_403(booking_cleanup):
     assert client.delete_booking(id_booking) == 403
     booking_cleanup.append(id_booking)
 
+
+@pytest.mark.smoke
+@pytest.mark.regression
+def test_update_booking_returns_correct_data(api_client, booking_cleanup):
+    response = api_client.create_booking({
+  "firstname": "Anas123",
+  "lastname": "Hassan",
+  "totalprice": 200,
+  "depositpaid": True,
+  "bookingdates": {
+    "checkin": "2025-06-01",
+    "checkout": "2025-06-05"
+  },
+  "additionalneeds": "Breakfast"
+})
+    booking_id = response["bookingid"]
+    update_response = api_client.update_booking(booking_id, {
+  "firstname": "UpdatedName",
+  "lastname": "Hassan",
+  "totalprice": 200,
+  "depositpaid": True,
+  "bookingdates": {
+    "checkin": "2025-06-01",
+    "checkout": "2025-06-05"
+  },
+  "additionalneeds": "Breakfast"
+})
+    assert update_response["firstname"] == "UpdatedName"
+    booking_cleanup.append(booking_id)
+
+@pytest.mark.regression
+def test_get_booking_invalid_id_returns_404(api_client):
+    response =  api_client.get_booking(99999)
+    assert response == 404
+
+@pytest.mark.regression
+@pytest.mark.smoke
+def test_create_booking_missing_fields(api_client):
+    response = api_client.create_booking({
+  "firstname": "Anas123",
+  "lastname": "Hassan",
+  "additionalneeds": "Breakfast"
+})
+    assert response == 500
+    
+
+

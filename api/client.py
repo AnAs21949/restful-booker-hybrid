@@ -11,19 +11,28 @@ class BookingAPIClient():
         return response.json()
     
     def create_booking(self, payload):
-        return requests.post(BOOKING_URL, json=payload).json()
+        response = requests.post(BOOKING_URL, json=payload)
+        if response.status_code == 200:
+            return response.json()
+        return response.status_code
 
 
     def get_booking(self, booking_id):
-        return requests.get(f"{BOOKING_URL}/{booking_id}").json()
-
+        response = requests.get(f"{BOOKING_URL}/{booking_id}")
+        if response.status_code == 200:
+            return response.json()
+        return response.status_code
+    
     def get_all_bookings(self, **params):
         return requests.get(BOOKING_URL, params=params).json()
     
     def update_booking(self, booking_id, payload):
         headers = {"Cookie": f"token={self.token}"}
-        return requests.put(f"{BOOKING_URL}/{booking_id}", json=payload, headers=headers).json()
-    
+        response = requests.put(f"{BOOKING_URL}/{booking_id}", json=payload, headers=headers)
+        if response.status_code == 200:
+            return response.json()
+        return response.status_code
+        
     
     def delete_booking(self, booking_id):
         headers = {"Cookie": f"token={self.token}"}

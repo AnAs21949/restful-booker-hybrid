@@ -6,6 +6,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 from pages.login_page import LoginPage
 from selenium.webdriver.chrome.options import Options
 import os
+import datetime
+
 
 
 
@@ -44,3 +46,19 @@ def logged_in_driver(driver):
     login_page.wait_for_url("admin/rooms")
     yield driver
 
+
+@pytest.hookimpl(tryfirst=True, hookwrapper=True)
+def pytest_runtest_makereport(item, call):
+    outcome = yield
+    report  = outcome.get_result()
+    if report.when == "call" and report.failed:
+        driver = item.funcargs.get("driver") or item.funcargs.get("logged_in_driver")
+        if driver is None:
+            return  # test API-only, pas de screenshot
+        screenshots_dir = os.path.join("screenshots")
+        os.makedirs(screenshots_dir, exist_ok=True)
+        ts   = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        name = f"{item.name}__{ts}.png"
+        path = os.path.join(screenshots_dir, name)
+        driver.save_screenshot(path)
+        print(f"\n[SCREENSHOT] {path}")
