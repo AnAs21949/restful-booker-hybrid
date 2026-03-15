@@ -21,7 +21,7 @@ restful-booker-hybrid/
     api/                  # API client layer (BookingAPIClient)
     pages/                # Selenium page objects (POM)
     tests/
-        test_api/         # 8 API tests
+        test_api/         # 11 API tests
         test_ui/          # 4 UI tests
         test_hybrid/      # 4 hybrid cross-layer tests
     utils/                # schemas, helpers, config
