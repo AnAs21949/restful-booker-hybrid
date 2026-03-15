@@ -1,8 +1,9 @@
 # Restful Booker Hybrid Test Framework
 
 A hybrid API + UI automation framework built with Python, pytest, and Selenium.
-The defining feature is a hybrid test layer that creates data via API and verifies
-it in the UI (and vice versa), catching bugs that neither layer alone can find.
+The framework targets restful-booker.herokuapp.com (API) and
+automationintesting.online (UI). Investigation confirmed these are independent
+backends, a real-world finding documented here as a constraint of the test environment.
 
 ## Tech Stack
 
@@ -21,7 +22,7 @@ restful-booker-hybrid/
     pages/                # Selenium page objects (POM)
     tests/
         test_api/         # 8 API tests
-        test_ui/          # 3 UI tests
+        test_ui/          # 4 UI tests
         test_hybrid/      # 4 hybrid cross-layer tests
     utils/                # schemas, helpers, config
     data/                 # test data JSON files
